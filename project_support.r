@@ -6,8 +6,11 @@ library(testthat)
 library(tictoc)
 library(rstan)
 library(jsonlite)
+library(parallel)
 library(rethinking) # devtools::install_github("rmcelreath/rethinking")
 library(rake) # devtools::install_github("babeheim/rake")
+
+n_cores <- 3
 
 n_iter <- 4000
 n_warmup <- floor(n_iter / 2)
