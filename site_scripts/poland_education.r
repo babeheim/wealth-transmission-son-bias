@@ -1,5 +1,5 @@
 
-rm(list = ls())
+rm(list = setdiff(ls(), "analyses_to_run"))
 
 source("./project_support.r")
 
@@ -22,7 +22,8 @@ for (i in 1:nrow(d0)) {
 }
 d <- data.frame(d0, ed1)
 drop <- which(d$age<25 | is.na(d$age * d$ed1 * d$male))
-d <- d[-drop, -(14:21)]
+# d <- d[-drop, -(14:21)]
+d <- d[-drop,]
 d$age <- d$age/10
 D_mu <- cbind((1-d$male), (1-d$male) * d$age, (1-d$male) * d$age^2,
   d$male, d$male * d$age, d$male * d$age^2)

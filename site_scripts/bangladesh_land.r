@@ -1,7 +1,7 @@
 
 ###########
 
-rm(list = ls())
+rm(list = setdiff(ls(), "analyses_to_run"))
 
 source("./project_support.r")
 
@@ -161,23 +161,23 @@ expect_true(abs(sd(beta_diff) - beta_diff_se) < beta_tol)
 
 
 
-png("./temp/figure1.png", res = 300, height = 5, width = 5, units = "in")
+# png("./temp/figure1.png", res = 300, height = 5, width = 5, units = "in")
 
-D_o <- colMeans(post$Dev_o)
-D_f <- colMeans(post$Dev_f)
+# D_o <- colMeans(post$Dev_o)
+# D_f <- colMeans(post$Dev_f)
 
-par(mar=c(4, 3, 2.5, 0.25))
-par(pty="s")
-plot(D_o ~ D_f, col= ifelse(d1$male == 1, "blue", "pink"), main = "Bangladesh Land", xlab = expression(D[mp]), ylab = expression(D[s] * "  and  " * D[d]) , xlim = c(-3, 3), ylim = c(-3, 3))
-for(i in (1:1000) * 50)
-{
-  curve((beta_s[i]) * x, add=TRUE, col=rgb(0, 0, 255, alpha=10, maxColorValue=255))
-  curve((beta_d[i]) * x, add=TRUE, col=rgb(255, 192, 203, alpha=10, maxColorValue=255))
-}
-curve(mean(beta_s) * x, add=TRUE, col="blue", lwd=2)
-curve(mean(beta_d) * x, add=TRUE, col="pink", lwd=2)
-legend(x="bottomright", legend=c(expression(rho[s] * "=" * 0.52, rho[d] * "=" * 0.37)), col=c("blue", "pink"), lty=1, lwd=2)
-dev.off()
+# par(mar=c(4, 3, 2.5, 0.25))
+# par(pty="s")
+# plot(D_o ~ D_f, col= ifelse(d1$male == 1, "blue", "pink"), main = "Bangladesh Land", xlab = expression(D[mp]), ylab = expression(D[s] * "  and  " * D[d]) , xlim = c(-3, 3), ylim = c(-3, 3))
+# for(i in (1:1000) * 50)
+# {
+#   curve((beta_s[i]) * x, add=TRUE, col=rgb(0, 0, 255, alpha=10, maxColorValue=255))
+#   curve((beta_d[i]) * x, add=TRUE, col=rgb(255, 192, 203, alpha=10, maxColorValue=255))
+# }
+# curve(mean(beta_s) * x, add=TRUE, col="blue", lwd=2)
+# curve(mean(beta_d) * x, add=TRUE, col="pink", lwd=2)
+# legend(x="bottomright", legend=c(expression(rho[s] * "=" * 0.52, rho[d] * "=" * 0.37)), col=c("blue", "pink"), lty=1, lwd=2)
+# dev.off()
 
 
 report <- list(

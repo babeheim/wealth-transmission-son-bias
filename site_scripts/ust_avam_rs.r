@@ -1,7 +1,7 @@
 
 ###########
 
-rm(list = ls())
+rm(list = setdiff(ls(), "analyses_to_run"))
 
 source("./project_support.r")
 
