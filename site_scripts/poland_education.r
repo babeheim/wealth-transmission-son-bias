@@ -7,8 +7,8 @@ measure <- "poland_education"
 
 d0 <- read.csv("./data/poland_education.csv", stringsAsFactors = FALSE)
 
-d0$age <- 2010-d0$yrbirth
-d0$age[1:1640] <- 2009-d0$yrbirth[1:1640]
+# d0$age <- 2010-d0$yrbirth
+# d0$age[1:1640] <- 2009-d0$yrbirth[1:1640]
 
 #one model for everyone
 ed1 <- rep(NA, nrow(d0))
