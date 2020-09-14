@@ -13,7 +13,7 @@ d0$male[which(d0$male == 2)] <- 0
 # gonna combine all folks under assumption that selection on height is very weak.
 
 # there's a big outlier in this dataset - about 4.5 SD's out. gonna remove it and see what the effect is.
-d0 <- d0[-88, ]
+d0 <- d0[-which(d0$id == "bfs2j"), ]
 # RESULT: no big effect, but probably better removed
 
 # using log height! all folks:

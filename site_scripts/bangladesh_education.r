@@ -5,83 +5,86 @@ source("./project_support.r")
 
 measure <- "bangladesh_education"
 
-d0 <- read.csv("./data/bangladesh_education.csv", stringsAsFactors = FALSE)
+# # additional anonymization to remove age-at-death information
 
-#make dataframe with all folks (and no repeats), for fitting age+sex function
-#all the latest children
-ed <- as.numeric(paste(d0$CLD_EDU[which(d0$CLD_DUMMY == 1)]))
-age <- as.numeric(paste(d0$CLD_AGE[which(d0$CLD_DUMMY == 1)]))
-sex <- as.numeric(paste(d0$CLD_SEX[which(d0$CLD_DUMMY == 1)]))
-#and their parents
-#fathers
-ed_temp <- as.numeric(paste(d0$FA_EDU[which(d0$CLD_DUMMY == 1)]))
-ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
-age_temp <- as.numeric(paste(d0$FA_AGE[which(d0$CLD_DUMMY == 1)]))
-age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
-ed <- c(ed, ed_temp)
-age <- c(age, age_temp)
-sex <- c(sex, rep(1, length(age_temp)))
-#mothers
-ed_temp <- as.numeric(paste(d0$MO_EDU[which(d0$CLD_DUMMY == 1)]))
-ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
-age_temp <- as.numeric(paste(d0$MO_AGE[which(d0$CLD_DUMMY == 1)]))
-age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
-ed <- c(ed, ed_temp)
-age <- c(age, age_temp)
-sex <- c(sex, rep(2, length(age_temp)))
-#and now THEIR parents
-#gfather
-ed_temp <- as.numeric(paste(d0$FA_EDU[which(d0$SIB_DUMMY == 1)]))
-ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
-age_temp <- as.numeric(paste(d0$FA_AGE[which(d0$SIB_DUMMY == 1)]))
-age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
-ed <- c(ed, ed_temp)
-age <- c(age, age_temp)
-sex <- c(sex, rep(1, length(age_temp)))
-#gmother
-ed_temp <- as.numeric(paste(d0$MO_EDU[which(d0$SIB_DUMMY == 1)]))
-ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
-age_temp <- as.numeric(paste(d0$MO_AGE[which(d0$SIB_DUMMY == 1)]))
-age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
-ed <- c(ed, ed_temp)
-age <- c(age, age_temp)
-sex <- c(sex, rep(2, length(age_temp)))
+# #make dataframe with all folks (and no repeats), for fitting age+sex function
+# #all the latest children
+# ed <- as.numeric(paste(d0$CLD_EDU[which(d0$CLD_DUMMY == 1)]))
+# age <- as.numeric(paste(d0$CLD_AGE[which(d0$CLD_DUMMY == 1)]))
+# sex <- as.numeric(paste(d0$CLD_SEX[which(d0$CLD_DUMMY == 1)]))
+# #and their parents
+# #fathers
+# ed_temp <- as.numeric(paste(d0$FA_EDU[which(d0$CLD_DUMMY == 1)]))
+# ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
+# age_temp <- as.numeric(paste(d0$FA_AGE[which(d0$CLD_DUMMY == 1)]))
+# age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
+# ed <- c(ed, ed_temp)
+# age <- c(age, age_temp)
+# sex <- c(sex, rep(1, length(age_temp)))
+# #mothers
+# ed_temp <- as.numeric(paste(d0$MO_EDU[which(d0$CLD_DUMMY == 1)]))
+# ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
+# age_temp <- as.numeric(paste(d0$MO_AGE[which(d0$CLD_DUMMY == 1)]))
+# age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$CLD_DUMMY == 1)]))]
+# ed <- c(ed, ed_temp)
+# age <- c(age, age_temp)
+# sex <- c(sex, rep(2, length(age_temp)))
+# #and now THEIR parents
+# #gfather
+# ed_temp <- as.numeric(paste(d0$FA_EDU[which(d0$SIB_DUMMY == 1)]))
+# ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
+# age_temp <- as.numeric(paste(d0$FA_AGE[which(d0$SIB_DUMMY == 1)]))
+# age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
+# ed <- c(ed, ed_temp)
+# age <- c(age, age_temp)
+# sex <- c(sex, rep(1, length(age_temp)))
+# #gmother
+# ed_temp <- as.numeric(paste(d0$MO_EDU[which(d0$SIB_DUMMY == 1)]))
+# ed_temp <- ed_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
+# age_temp <- as.numeric(paste(d0$MO_AGE[which(d0$SIB_DUMMY == 1)]))
+# age_temp <- age_temp[-which(duplicated(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))]
+# ed <- c(ed, ed_temp)
+# age <- c(age, age_temp)
+# sex <- c(sex, rep(2, length(age_temp)))
+# d <- data.frame(age, ed, sex)
+# drop <- which(is.na(age * ed * sex) | age < 18)
+# d <- d[-drop, ]
+# write.csv(d, "./data/bangladesh_education_all.csv", row.names = FALSE)
 
-d <- data.frame(age, ed, sex)
-drop <- which(is.na(age * ed * sex) | age < 18)
-d <- d[-drop, ]
+# #Now the dataset with parent data 
+# #start with youngest gen
+# #need to record family ID, for later
+# ed <- as.numeric(paste(d0$CLD_EDU[which(d0$CLD_DUMMY == 1)]))
+# age <- as.numeric(paste(d0$CLD_AGE[which(d0$CLD_DUMMY == 1)]))
+# sex <- as.numeric(paste(d0$CLD_SEX[which(d0$CLD_DUMMY == 1)]))
+# fam_id <- paste(d0$RESP_RID[which(d0$CLD_DUMMY == 1)])
+# edf <- as.numeric(paste(d0$FA_EDU[which(d0$CLD_DUMMY == 1)]))
+# agef <- as.numeric(paste(d0$FA_AGE[which(d0$CLD_DUMMY == 1)]))
+# edm <- as.numeric(paste(d0$MO_EDU[which(d0$CLD_DUMMY == 1)]))
+# agem <- as.numeric(paste(d0$MO_AGE[which(d0$CLD_DUMMY == 1)]))
+# #and the next highest gen
+# ed <- c(ed, as.numeric(paste(d0$CLD_EDU[which(d0$SIB_DUMMY == 1)])))
+# age <- c(age, as.numeric(paste(d0$CLD_AGE[which(d0$SIB_DUMMY == 1)])))
+# sex <- c(sex, as.numeric(paste(d0$CLD_SEX[which(d0$SIB_DUMMY == 1)])))
+# fam_id <- c(fam_id, paste(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))
+# edf <- c(edf, as.numeric(paste(d0$FA_EDU[which(d0$SIB_DUMMY == 1)])))
+# agef <- c(agef, as.numeric(paste(d0$FA_AGE[which(d0$SIB_DUMMY == 1)])))
+# edm <- c(edm, as.numeric(paste(d0$MO_EDU[which(d0$SIB_DUMMY == 1)])))
+# agem <- c(agem, as.numeric(paste(d0$MO_AGE[which(d0$SIB_DUMMY == 1)])))
+# # offspring table
+# d1 <- data.frame(age, ed, sex, agef, edf, agem, edm, fam_id)
+# drop <- which(is.na(age * ed * sex * agef * agem * edf * edm/100) | age < 18)
+# d1 <- d1[-drop, ]
+# write.csv(d1, "./data/bangladesh_education_offspring.csv", row.names = FALSE)
+
+d <- read.csv("./data/bangladesh_education_all.csv", stringsAsFactors = FALSE)
 d$sex[which(d$sex == 2)] <- 0
 names(d) <- c("age", "ed", "male")
 d$age <- d$age/10
 D_mu <- cbind((1-d$male), (1-d$male) * d$age, d$male, d$male * d$age)
 D_sig <- cbind((1-d$male), (1-d$male) * d$age, (1-d$male) * d$age^2, d$male, d$male * d$age, d$male * d$age^2)
 
-
-#Now the dataset with parent data 
-#start with youngest gen
-#need to record family ID, for later
-ed <- as.numeric(paste(d0$CLD_EDU[which(d0$CLD_DUMMY == 1)]))
-age <- as.numeric(paste(d0$CLD_AGE[which(d0$CLD_DUMMY == 1)]))
-sex <- as.numeric(paste(d0$CLD_SEX[which(d0$CLD_DUMMY == 1)]))
-fam_id <- paste(d0$RESP_RID[which(d0$CLD_DUMMY == 1)])
-edf <- as.numeric(paste(d0$FA_EDU[which(d0$CLD_DUMMY == 1)]))
-agef <- as.numeric(paste(d0$FA_AGE[which(d0$CLD_DUMMY == 1)]))
-edm <- as.numeric(paste(d0$MO_EDU[which(d0$CLD_DUMMY == 1)]))
-agem <- as.numeric(paste(d0$MO_AGE[which(d0$CLD_DUMMY == 1)]))
-#and the next highest gen
-ed <- c(ed, as.numeric(paste(d0$CLD_EDU[which(d0$SIB_DUMMY == 1)])))
-age <- c(age, as.numeric(paste(d0$CLD_AGE[which(d0$SIB_DUMMY == 1)])))
-sex <- c(sex, as.numeric(paste(d0$CLD_SEX[which(d0$SIB_DUMMY == 1)])))
-fam_id <- c(fam_id, paste(d0$RESP_RID[which(d0$SIB_DUMMY == 1)]))
-edf <- c(edf, as.numeric(paste(d0$FA_EDU[which(d0$SIB_DUMMY == 1)])))
-agef <- c(agef, as.numeric(paste(d0$FA_AGE[which(d0$SIB_DUMMY == 1)])))
-edm <- c(edm, as.numeric(paste(d0$MO_EDU[which(d0$SIB_DUMMY == 1)])))
-agem <- c(agem, as.numeric(paste(d0$MO_AGE[which(d0$SIB_DUMMY == 1)])))
-
-# offspring table
-d1 <- data.frame(age, ed, sex, agef, edf, agem, edm, fam_id)
-drop <- which(is.na(age * ed * sex * agef * agem * edf * edm/100) | age < 18)
-d1 <- d1[-drop, ]
+d1 <- read.csv("./data/bangladesh_education_offspring.csv", stringsAsFactors = FALSE)
 d1$sex[which(d1$sex == 2)] <- 0
 names(d1) <- c("age", "ed", "male", "agef", "edf", "agem", "edm", "fam_id")
 d1$age <- d1$age/10

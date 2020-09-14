@@ -1,4 +1,4 @@
 project: wealth transmission model-fitting
 events:
-- fit all models: 2029.922 sec elapsed
-- prep output table: 0.006 sec elapsed
+- fit all models: 1787.857 sec elapsed
+- prep output table: 0.019 sec elapsed

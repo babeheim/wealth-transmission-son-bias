@@ -7,64 +7,80 @@ source("./project_support.r")
 
 measure <- "bangladesh_land"
 
-d0 <- read.csv("./data/bangladesh_land.csv", stringsAsFactors = FALSE)
+# additional anonymization to remove age-at-death information
+# d0 <- read.csv("./data/bangladesh_land.csv", stringsAsFactors = FALSE)
 
-d0$RF_AGE_DEATH[which(d0$RF_AGE_DEATH == 999)] <- NA
-d0$HF_AGE_DEATH[which(d0$HF_AGE_DEATH == 999)] <- NA
-d0$RF_YRS_SINCE_DEATH[which(d0$RF_YRS_SINCE_DEATH == 999)] <- NA
-d0$HF_YRS_SINCE_DEATH[which(d0$HF_YRS_SINCE_DEATH == 999)] <- NA
-d0$HF_AGE[which(d0$HF_AGE == 999)] <- NA
+# d0$RF_AGE_DEATH[which(d0$RF_AGE_DEATH == 999)] <- NA
+# d0$HF_AGE_DEATH[which(d0$HF_AGE_DEATH == 999)] <- NA
+# d0$RF_YRS_SINCE_DEATH[which(d0$RF_YRS_SINCE_DEATH == 999)] <- NA
+# d0$HF_YRS_SINCE_DEATH[which(d0$HF_YRS_SINCE_DEATH == 999)] <- NA
+# d0$HF_AGE[which(d0$HF_AGE == 999)] <- NA
 
-# get all folks who have inherited land (throw in parents) and do not have land = 0
-land <- c(d0$CF_TOTAL_DEC, d0$CF_TOTAL_DEC, d0$RP_TOTAL_DEC, d0$HP_TOTAL_DEC)
-male <- c(rep(0, nrow(d0)), rep(1, nrow(d0)), rep(1, nrow(d0)), rep(0, nrow(d0)))
-age <- c(d0$RESP_AGE_CALC, d0$HUS_AGE, d0$RF_AGE, d0$HF_AGE)
-age[which(is.na(age))] <- 0
-age_dead <- c(
-  rep(0, nrow(d0)),
-  d0$HUS_AGE_DEATH + d0$HUS_YRS_SINCE_DEATH,
-  d0$RF_AGE_DEATH + d0$RF_YRS_SINCE_DEATH,
-  d0$HF_AGE_DEATH + d0$HF_YRS_SINCE_DEATH
-)
-age_dead[which(is.na(age_dead))] <- 0
-age <- age + age_dead
-age[which(age == 0)] <- NA
-age <- age/10
-d <- data.frame(male, land, age)
-drop <- which(d0$CF_TOTAL_DEC == d0$RP_TOTAL_DEC | d0$CF_TOTAL_DEC == d0$HP_TOTAL_DEC)
-#attempting to drop anyone who "lives at home" with one set of parents
-drop <- c(drop, drop + nrow(d0)) #and their husbands...
-d <- d[-drop, ]
+# # get all folks who have inherited land (throw in parents) and do not have land = 0
+# land <- c(d0$CF_TOTAL_DEC, d0$CF_TOTAL_DEC, d0$RP_TOTAL_DEC, d0$HP_TOTAL_DEC)
+# male <- c(rep(0, nrow(d0)), rep(1, nrow(d0)), rep(1, nrow(d0)), rep(0, nrow(d0)))
+# age <- c(d0$RESP_AGE_CALC, d0$HUS_AGE, d0$RF_AGE, d0$HF_AGE)
+# expect_true(length(age) == 3772)
+# expect_true(sum(is.na(age)) == 1688)
+# age[which(is.na(age))] <- 0
+# age_dead <- c(
+#   rep(0, nrow(d0)),
+#   d0$HUS_AGE_DEATH + d0$HUS_YRS_SINCE_DEATH,
+#   d0$RF_AGE_DEATH + d0$RF_YRS_SINCE_DEATH,
+#   d0$HF_AGE_DEATH + d0$HF_YRS_SINCE_DEATH
+# )
+# dead <- as.numeric(!is.na(age_dead))
+# expect_true(length(age_dead) == 3772)
+# expect_true(sum(!is.na(age_dead)) == 1871)
+# age_dead[which(is.na(age_dead))] <- 0
+# expect_true(sum(age_dead != 0 & age != 0) == 0)
+# age <- age + age_dead
+# age[which(age == 0)] <- NA
+# age <- age/10
+# d <- data.frame(male, land, age, dead)
+# drop <- which(d0$CF_TOTAL_DEC == d0$RP_TOTAL_DEC | d0$CF_TOTAL_DEC == d0$HP_TOTAL_DEC)
+# #attempting to drop anyone who "lives at home" with one set of parents
+# drop <- c(drop, drop + nrow(d0)) #and their husbands...
+# d <- d[-drop, ]
+# write.csv(d, "./data/bangladesh_land_all.csv", row.names = FALSE)
+
+# #now folks with parents
+# land <- c(d0$CF_TOTAL_DEC, d0$CF_TOTAL_DEC)
+# landf <- c(d0$RP_TOTAL_DEC, d0$HP_TOTAL_DEC)
+# male <- c(rep(0, nrow(d0)), rep(1, nrow(d0)))
+# age <- c(d0$RESP_AGE_CALC, d0$HUS_AGE)
+# age[which(is.na(age))] <- 0
+# age_dead <- c(rep(0, nrow(d0)), d0$HUS_AGE_DEATH + d0$HUS_YRS_SINCE_DEATH)
+# expect_true(sum(!is.na(age_dead)) == 998)
+# dead <- as.numeric(!is.na(age_dead))
+# age_dead[which(is.na(age_dead))] <- 0
+# age <- age + age_dead
+# age[which(age == 0)] <- NA
+# age <- age/10
+# agef <- c(d0$RF_AGE, d0$HF_AGE)
+# agef[which(is.na(agef))] <- 0
+# agef_dead <- c(d0$RF_AGE_DEATH + d0$RF_YRS_SINCE_DEATH,
+#   d0$HF_AGE_DEATH + d0$HF_YRS_SINCE_DEATH)
+# expect_true(sum(!is.na(agef_dead)) == 873)
+# deadf <- as.numeric(!is.na(agef_dead))
+# agef_dead[which(is.na(agef_dead))] <- 0
+# agef <- agef + agef_dead
+# agef[which(agef == 0)] <- NA
+# agef <- agef/10
+# d1 <- data.frame(male, land, age, dead, landf, agef, deadf)
+# drop <- which(d0$CF_TOTAL_DEC == d0$RP_TOTAL_DEC | d0$CF_TOTAL_DEC == d0$HP_TOTAL_DEC)
+# #attempting to drop anyone who "lives at home" with one set of parents
+# drop <- c(drop, drop + nrow(d0)) #and their husbands...
+# d1 <- d1[-drop, ]
+# write.csv(d1, "./data/bangladesh_land_offspring.csv", row.names = FALSE)
+
+d <- read.csv("./data/bangladesh_land_all.csv", stringsAsFactors = FALSE)
 drop <- which(is.na(d$land * d$age) | d$land == 0)
 d <- d[-drop, ]
-d$land <- log(d$land)
+d$land <- log(d$land) # 2181 long
 D_mu <- cbind(rep(1, nrow(d)), d$age, d$age^2)
 
-
-#now folks with parents
-land <- c(d0$CF_TOTAL_DEC, d0$CF_TOTAL_DEC)
-landf <- c(d0$RP_TOTAL_DEC, d0$HP_TOTAL_DEC)
-male <- c(rep(0, nrow(d0)), rep(1, nrow(d0)))
-age <- c(d0$RESP_AGE_CALC, d0$HUS_AGE)
-age[which(is.na(age))] <- 0
-age_dead <- c(rep(0, nrow(d0)), d0$HUS_AGE_DEATH + d0$HUS_YRS_SINCE_DEATH)
-age_dead[which(is.na(age_dead))] <- 0
-age <- age + age_dead
-age[which(age == 0)] <- NA
-age <- age/10
-agef <- c(d0$RF_AGE, d0$HF_AGE)
-agef[which(is.na(agef))] <- 0
-agef_dead <- c(d0$RF_AGE_DEATH + d0$RF_YRS_SINCE_DEATH,
-  d0$HF_AGE_DEATH + d0$HF_YRS_SINCE_DEATH)
-agef_dead[which(is.na(agef_dead))] <- 0
-agef <- agef + agef_dead
-agef[which(agef == 0)] <- NA
-agef <- agef/10
-d1 <- data.frame(male, land, age, landf, agef)
-drop <- which(d0$CF_TOTAL_DEC == d0$RP_TOTAL_DEC | d0$CF_TOTAL_DEC == d0$HP_TOTAL_DEC)
-#attempting to drop anyone who "lives at home" with one set of parents
-drop <- c(drop, drop + nrow(d0)) #and their husbands...
-d1 <- d1[-drop, ]
+d1 <- read.csv("./data/bangladesh_land_offspring.csv", stringsAsFactors = FALSE)
 drop <- which(is.na(d1$land * d1$age * d1$landf * d1$agef) | d1$land == 0 | d1$landf == 0)
 d1 <- d1[-drop, ]
 d1$land <- log(d1$land)

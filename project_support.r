@@ -15,7 +15,7 @@ n_cores <- 3
 n_iter <- 4000
 n_warmup <- floor(n_iter / 2)
 
-beta_tol <- 0.05
+beta_tol <- 0.07
 
 init <- "random"
 

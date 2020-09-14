@@ -12,7 +12,11 @@ datasets_available <- list.files("./data", full.names = TRUE)
 analyses_to_run <- datasets_available
 analyses_to_run <- gsub("\\./data", "./site_scripts", analyses_to_run)
 analyses_to_run <- gsub("\\.csv", ".r", analyses_to_run)
+analyses_to_run <- gsub("_all", "", analyses_to_run)
+analyses_to_run <- gsub("_offspring", "", analyses_to_run)
+analyses_to_run <- sort(unique(analyses_to_run))
 analyses_to_run <- as.list(analyses_to_run)
+# for (z in 1:length(analyses_to_run)) source(analyses_to_run[[z]])
 x <- mclapply(1:length(analyses_to_run), function(z) source(analyses_to_run[[z]]), mc.cores = n_cores)
 toc(log = TRUE)
 

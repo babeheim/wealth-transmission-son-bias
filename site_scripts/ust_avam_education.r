@@ -7,10 +7,10 @@ measure <- "ust_avam_education"
 
 d0 <- read.csv("./data/ust_avam_education.csv", stringsAsFactors = FALSE)
 
-for (i in c(2,3,5:13)) {
+for (i in c("ed", "edf", "edm", "age", "agef", "agem")) {
   d0[which(d0[,i] == 9999),i] <- NA
 }
-d0[which(d0[,4] == ""),4] <- NA
+d0[which(d0[,"sex"] == ""),"sex"] <- NA
 # d0$sex <- as.numeric(d0$sex)-2
 # names(d0)[which(names(d0)=="sex")] <- "male"
 d0$male <- as.numeric(d0$sex == "M")
